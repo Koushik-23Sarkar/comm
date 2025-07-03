@@ -1,32 +1,32 @@
-# Import socket module
+# client.py
+
 import socket
 
-# In this line we define our local host address with port number
+# Server details
 SERVER = "127.0.0.1"
 PORT = 8080
 
-# Making a socket instance
+# Create client socket
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-# connect to the server
 client.connect((SERVER, PORT))
 
-# Running an infinite loop
+print("Connected to server.")
+print("Type equations like: 4 + 5 or 10 / 2")
+print("Type 'Over' to end the connection.\n")
+
 while True:
-    print("Example : 4 + 5")
-    # here we get the input from the user in the form operand operator operand
-    inp = input("Enter the operation in the form operand operator operand: ")
-    
-    # If user wants to terminate the server connection he can type Over
-    if inp == "Over":
+    user_input = input("Enter operation: ")
+
+    if user_input.lower() == "over":
+        client.send(user_input.encode())
         break
 
-    # Here we send the user input to server socket by send method
-    client.send(inp.encode())
+    # Send to server
+    client.send(user_input.encode())
 
-    # Here we received output from the server socket
-    answer = client.recv(1024)
-    print("Answer is " + answer.decode())
-    print("Type 'Over' to terminate")
+    # Receive and print response
+    result = client.recv(1024).decode()
+    print("Result:", result)
+    print()
 
 client.close()
